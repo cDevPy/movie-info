@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Movie Details</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="movieDetails"></div>
+  <script>
+    const movie = JSON.parse(localStorage.getItem("selectedMovie"));
+    const apiKey = "ab8e2cb74c1b2fc8e9122105110ac79c2ae9b189e716182faf408a96d237e212";
+    const movieDiv = document.getElementById("movieDetails");
+
+    async function loadMovieDetails() {
+      const response = await fetch(`https://api.trakt.tv/movies/${movie.ids.slug}?extended=full,images`, {
+        headers: {
+          "Content-Type": "application/json",
+          "trakt-api-key": apiKey,
+          "trakt-api-version": "2"
+        }
+      });
+
+      const data = await response.json();
+      movieDiv.innerHTML = `
+        <h1>${data.title} (${data.year})</h1>
+        <p><strong>Genre:</strong> ${data.genres.join(", ")}</p>
+        <p><strong>Rating:</strong> ${data.rating.toFixed(1)}/10</p>
+        <p><strong>Year Produced:</strong> ${data.year}</p>
+        <p><strong>Genre:</strong> ${data.genres}</p>
+        <p><strong>Rating:</strong> ${data.rating}</p>
+        <p><strong>Synopsis:</strong> ${data.overview}</p>
+      `;
+    }
+
+    loadMovieDetails();
+  </script>
+</body>
+</html>
